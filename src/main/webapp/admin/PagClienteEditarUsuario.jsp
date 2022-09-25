@@ -13,7 +13,7 @@
 
     <body>
         <div class="container">
-            <%@include file="../includes/Navegacion.jsp" %>
+            
         </div>
 
         <%

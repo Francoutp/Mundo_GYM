@@ -1,26 +1,25 @@
 package Modelos;
-
 /**
- * Fecha:18/09/2022
- * Versión: 1.0
+ * Fecha:24/09/2022
+ * Versión: 1.1
  * @author ricardo
+ * perfil usuario: 1 cliente / 2 administrador
  */
 public class Usuario {
     private int idUsuario;
     private String nombreUsuario;
     private String claveusuario;
     private int perfilUsuario;
-    private String desPerfilUsuario;
+    
 
     public Usuario() {
     }
-    
-    //omitimos el id del perfil de usuario, usamos la descripcion del perfil
-    public Usuario(int idUsuario, String nombreUsuario, String claveusuario, String desPerfilUsuario) {
+
+    public Usuario(int idUsuario, String nombreUsuario, String claveusuario, int perfilUsuario) {
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.claveusuario = claveusuario;
-        this.desPerfilUsuario = desPerfilUsuario;
+        this.perfilUsuario = perfilUsuario;
     }
 
     public int getIdUsuario() {
@@ -55,13 +54,8 @@ public class Usuario {
         this.perfilUsuario = perfilUsuario;
     }
 
-    public String getDesPerfilUsuario() {
-        return desPerfilUsuario;
+    @Override
+    public String toString() {
+        return "Usuario{" + "idUsuario=" + idUsuario + ", nombreUsuario=" + nombreUsuario + ", claveusuario=" + claveusuario + ", perfilUsuario=" + perfilUsuario + '}';
     }
-
-    public void setDesPerfilUsuario(String desPerfilUsuario) {
-        this.desPerfilUsuario = desPerfilUsuario;
-    }
-
-    
 }

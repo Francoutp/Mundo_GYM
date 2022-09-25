@@ -2,35 +2,43 @@ package Modelos;
 
 import java.util.Date;
 
-public class Cliente extends Usuario {
+public class Cliente{
 
     private int idCliente;
-    private String direccion;
-    private double talla;
     private String nombreCliente;
     private String apellidoCliente;
-    private String DNI;
-    private Double peso_inicial;
-    private Double peso_actual;
-    private Double IMC;
-    private String Celular;
-    private int id_consolidacion;
-    private Date fecha_ini_programacion;
-    private Date fecha_fin_programacion;
-    private int id_dieta;
-    private int id_rutina;
-    private String Observacion;
+    private String dni;
+    private String direccion;
+    private double talla;
+    private double pesoInicial;
+    private double pesoActual;
+    private double imc;
+    private int idUsuario;
+    private String celular;
 
-    public void calObser() {
-        if (IMC < 18.5) {
-            Observacion = ("Bajo Peso");
-        } else if (IMC >= 18.5 && IMC <= 24.9) {
-            Observacion = ("Normal");
-        } else if (IMC >= 25 && IMC <= 29.9) {
-            Observacion = ("Sobrepeso");
-        } else {
-            Observacion = ("Obesidad");
-        }
+    public Cliente() {
+    }
+
+    public Cliente(int idCliente, String nombreCliente, String apellidoCliente, String dni, String direccion, double talla, double pesoInicial, double pesoActual, double imc, int idUsuario, String celular) {
+        this.idCliente = idCliente;
+        this.nombreCliente = nombreCliente;
+        this.apellidoCliente = apellidoCliente;
+        this.dni = dni;
+        this.direccion = direccion;
+        this.talla = talla;
+        this.pesoInicial = pesoInicial;
+        this.pesoActual = pesoActual;
+        this.imc = imc;
+        this.idUsuario = idUsuario;
+        this.celular = celular;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
     }
 
     public int getIdCliente() {
@@ -39,22 +47,6 @@ public class Cliente extends Usuario {
 
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public double getTalla() {
-        return talla;
-    }
-
-    public void setTalla(double talla) {
-        this.talla = talla;
     }
 
     public String getNombreCliente() {
@@ -73,92 +65,61 @@ public class Cliente extends Usuario {
         this.apellidoCliente = apellidoCliente;
     }
 
-    public String getDNI() {
-        return DNI;
+    public String getDni() {
+        return dni;
     }
 
-    public void setDNI(String DNI) {
-        this.DNI = DNI;
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 
-    public Double getPeso_inicial() {
-        return peso_inicial;
+    public String getDireccion() {
+        return direccion;
     }
 
-    public void setPeso_inicial(Double peso_inicial) {
-        this.peso_inicial = peso_inicial;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
-    public Double getPeso_actual() {
-        return peso_actual;
+    public double getTalla() {
+        return talla;
     }
 
-    public void setPeso_actual(Double peso_actual) {
-        this.peso_actual = peso_actual;
+    public void setTalla(double talla) {
+        this.talla = talla;
     }
 
-    public Double getIMC() {
-        return IMC;
+    public double getPesoInicial() {
+        return pesoInicial;
     }
 
-    public void setIMC(Double IMC) {
-        this.IMC = IMC;
+    public void setPesoInicial(double pesoInicial) {
+        this.pesoInicial = pesoInicial;
     }
 
-    public String getCelular() {
-        return Celular;
+    public double getPesoActual() {
+        return pesoActual;
     }
 
-    public void setCelular(String Celular) {
-        this.Celular = Celular;
+    public void setPesoActual(double pesoActual) {
+        this.pesoActual = pesoActual;
     }
 
-    public int getId_consolidacion() {
-        return id_consolidacion;
+    public double getImc() {
+        return imc;
     }
 
-    public void setId_consolidacion(int id_consolidacion) {
-        this.id_consolidacion = id_consolidacion;
+    public void setImc(double imc) {
+        this.imc = imc;
     }
 
-    public Date getFecha_ini_programacion() {
-        return fecha_ini_programacion;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setFecha_ini_programacion(Date fecha_ini_programacion) {
-        this.fecha_ini_programacion = fecha_ini_programacion;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
-
-    public Date getFecha_fin_programacion() {
-        return fecha_fin_programacion;
-    }
-
-    public void setFecha_fin_programacion(Date fecha_fin_programacion) {
-        this.fecha_fin_programacion = fecha_fin_programacion;
-    }
-
-    public int getId_dieta() {
-        return id_dieta;
-    }
-
-    public void setId_dieta(int id_dieta) {
-        this.id_dieta = id_dieta;
-    }
-
-    public int getId_rutina() {
-        return id_rutina;
-    }
-
-    public void setId_rutina(int id_rutina) {
-        this.id_rutina = id_rutina;
-    }
-
-    public String getObservacion() {
-        return Observacion;
-    }
-
-    public void setObservacion(String Observacion) {
-        this.Observacion = Observacion;
-    }
-
+    
+    
 }

@@ -31,5 +31,13 @@
             </ul>
         </ul>
     </li>
-    <li><a href="./pagLogin.jsp"><i class="fa fa-arrow-right" aria-hidden="true"></i> Salir</a></li>
+    <li><a href="#"><i class="fa fa-address-card" aria-hidden="true"></i> Aca va el Nombre del usuario logueado</a>
+        <span id="s1"></span>
+        <ul class="subs">
+            <ul>
+                <li><a href="pagCambioClave.jsp"><i class="fa fa-lock" aria-hidden="true"></i>  Actualizar Contraseña</a></li>
+                <li><a href="pagLogin.jsp"><i class="fa fa-arrow-right" aria-hidden="true"></i>  Salir</a></li>
+            </ul>
+        </ul>
+    </li>
 </ul>

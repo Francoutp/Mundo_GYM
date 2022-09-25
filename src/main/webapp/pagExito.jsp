@@ -14,7 +14,7 @@
         <link href="font/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet prefetch" type="text/css"/>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
-        <title>.:: Error ::.</title>
+        <title>.:: Suceso ::.</title>
     </head>
     <body>
         <div class="wrapper">
@@ -23,13 +23,16 @@
                 <br><!-- espacio adicional -->
                 <center>
                     <h4 style="color: #0275d8">
-                        <span style="color:red" class="fa fa-user-times" ></span>
+                        <span style="color:green" class="fa fa-user-plus" ></span>
                         <br><!-- uno mas por siacaso -->
                         <%
-                            out.print(request.getSession().getAttribute("mensaje"));
+                            out.println(request.getSession().getAttribute("mensaje"));
+                            HttpSession objetoSesion =request.getSession();
+                            Usuario usu=(Usuario)objetoSesion.getAttribute("usuario");
+                            out.println("Datos de sesión: "+usu.toString());
                         %>
                     </h4>
-                    <a href="javascript: history.go(-1)" class="btn btn-danger btn-sm btn-block">
+                    <a href="<%=request.getSession().getAttribute("paginadestino")%>" class="btn btn-success btn-sm btn-block">
                         Regresar
                     </a>
                 </center>

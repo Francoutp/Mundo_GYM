@@ -1,106 +1,60 @@
 package Controlador;
 
-import Dao.ClienteDao;
+import Conexion.MySQLConexion;
 import Dao.UsuarioDao;
-import Modelos.Cliente;
 import Modelos.Usuario;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class ControlUsuario extends HttpServlet {
 
-    private ClienteDao cliDao = new ClienteDao();
-    private UsuarioDao userDao = new UsuarioDao();
-    private final String PagAsignar = "/admin/PagClienteAsignarUsuario.jsp";
-    private final String PagEditar = "/admin/PagClienteEditarUsuario.jsp";
-
+    UsuarioDao obj=new UsuarioDao();
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String accion = request.getParameter("accion");
-
-        if (accion.equalsIgnoreCase("asignar_usuario")) {
-            AsignarUsuario(request, response);
-        } else if (accion.equalsIgnoreCase("registrar_usuario")) {
-            RegistrarUsuario(request, response);
-        } else if (accion.equalsIgnoreCase("editar_usuario")) {
-            EditarUsuario(request, response);
-        } else if (accion.equalsIgnoreCase("guardar_edicion")) {
-            GuardarEdicion(request, response);
+        String accion =request.getParameter("accion");
+        if (accion.equalsIgnoreCase("actualizarclave")) {
+            actualizar(request,response);
         }
     }
-
-    protected void GuardarEdicion(HttpServletRequest request, HttpServletResponse response)
+    
+    protected void actualizar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        Cliente objCli = new Cliente();
-        objCli.setIdUsuario(Integer.parseInt(request.getParameter("id")));
-        objCli.setNombreUsuario(request.getParameter("nombreUsuario"));
-        objCli.setClaveusuario(request.getParameter("clave"));
-        String msg = userDao.EditarUsuario(objCli);
-
-        if (msg.equals("OK")) {
-            request.getSession().setAttribute("success", "Los datos del usuario se editaron de forma correcta.");
-        } else {
-            request.getSession().setAttribute("error", msg);
-        }
-
-        response.sendRedirect("ControlCliente?accion=listar");
-    }
-
-    protected void EditarUsuario(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-        int id = Integer.parseInt(request.getParameter("idCli"));
-
-        request.setAttribute("cliente", cliDao.ObtenerUsuario(id));
-        request.getRequestDispatcher(PagEditar).forward(request, response);
-    }
-
-    protected void RegistrarUsuario(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-        Usuario objUsu = new Usuario();
-        objUsu.setIdUsuario(Integer.parseInt(userDao.CorrelativoUsuario()));
-        objUsu.setNombreUsuario(request.getParameter("nombreUsuario"));
-        objUsu.setClaveusuario(request.getParameter("clave"));
-        objUsu.setPerfilUsuario(1);
-        String msg = userDao.RegistrarUsuario(objUsu);
-
-        if (msg.equals("OK")) {
-            Cliente objCli = new Cliente();
-            objCli.setIdUsuario(objUsu.getIdUsuario());
-            objCli.setIdCliente(Integer.parseInt(request.getParameter("id")));
-            msg = cliDao.Update_UsuarioCliente(objCli);
-
-            if (msg.equals("OK")) {
-                request.getSession().setAttribute("success", "Los datos del usuario se guardaron de forma correcta.");
-            } else {
-                request.getSession().setAttribute("error", msg);
+        String usu=request.getParameter("usuario");
+        String clave1=request.getParameter("claveActual");
+        HttpSession objetoSesion =request.getSession();
+        Usuario user=(Usuario)objetoSesion.getAttribute("usuario");
+        if (!clave1.equals(user.getClaveusuario())) {
+            request.getSession().setAttribute("mensaje", "La contraseña actual ingresada es incorrecta");
+            request.getRequestDispatcher("/pagError.jsp").forward(request, response);
+        }else{
+            String clave2=request.getParameter("claveNueva");
+            String clave3=request.getParameter("claveNuevaConf");
+            if (!clave2.equals(clave3)) {
+               request.getSession().setAttribute("mensaje", "Las contraseñas nuevas ingresadas no coinciden");
+               request.getRequestDispatcher("/pagError.jsp").forward(request, response);
+            } else{
+                user.setClaveusuario(clave3);
+                objetoSesion.setAttribute("usuario", user);//validar si actualiza objeto de sesion
+                obj.actualizar(user);
+                request.getSession().setAttribute("paginadestino", "pagLogin.jsp");
+                request.getSession().setAttribute("mensaje", "Contraseña Actualizada. Inicie sesion nuevamente");
+                request.getRequestDispatcher("/pagExito.jsp").forward(request, response);
             }
-        } else {
-            request.getSession().setAttribute("error", msg);
         }
-
-        response.sendRedirect("ControlCliente?accion=listar");
     }
-
-    protected void AsignarUsuario(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-        int id = Integer.parseInt(request.getParameter("id"));
-
-        request.setAttribute("cliente", cliDao.BuscarPorId(id));
-        request.getRequestDispatcher(PagAsignar).forward(request, response);
-    }
+    
+    
+    
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

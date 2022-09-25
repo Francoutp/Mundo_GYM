@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import Dao.*;
 import Modelos.*;
 import java.util.*;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 /**
- * Fecha:18/09/2022 Versión: 1.0
- *
+ * Fecha:24/09/2022 
+ * Versión: 1.1
  * @author ricardo
  */
 public class ControlAcceso extends HttpServlet {
@@ -22,8 +22,7 @@ public class ControlAcceso extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-
+        
         if (request.getParameter("btnAcceder") != null) {
             Usuario usu = new Usuario();
             String user = request.getParameter("nombreUsuario");
@@ -31,10 +30,9 @@ public class ControlAcceso extends HttpServlet {
             usu.setNombreUsuario(user);
             usu.setClaveusuario(clave);
             UsuarioDao objLogin = new UsuarioDao();
-            String perfil;
             try {
-                List<Usuario> ListUsuario = new ArrayList<Usuario>();
-                usu = objLogin.Login(usu);
+                List<Usuario> ListUsuario = new ArrayList();
+                usu = objLogin.Logueo(usu);
                 if (String.valueOf(usu.getPerfilUsuario()) == null) {
                     //USUARIO NO ESTA REGISTRADO
                     response.sendRedirect("pagError.jsp");
@@ -42,28 +40,27 @@ public class ControlAcceso extends HttpServlet {
                     switch (String.valueOf(usu.getPerfilUsuario())) {
                         case "2": {
                             //PERFIL DE ADMINISTRADOR
-                            HttpSession objSesion = request.getSession();
-                            objSesion.setAttribute("usuario", user);
-                            objSesion.setAttribute("nivel", "Administrador");
-                            objSesion.setAttribute("idUsuario_Login", usu.getIdUsuario());
+                            HttpSession objetoSesion = request.getSession();
+                            objetoSesion.setAttribute("usuario", usu);
+                            request.getSession().setAttribute("mensaje", "El usuario y/o la clave son incorrectos!");
                             response.sendRedirect("pagInicio.jsp");
                             break;
                         }
                         case "1": {
                             //PERFIL DE CLIENTE
-                            HttpSession objSesion = request.getSession();
-                            objSesion.setAttribute("usuario", user);
-                            objSesion.setAttribute("nivel", "Cliente");
-                            objSesion.setAttribute("idUsuario_Login", usu.getIdUsuario());
+                            HttpSession objetoSesion = request.getSession();
+                            objetoSesion.setAttribute("usuario", usu);
                             response.sendRedirect("pagHome.jsp");
                             break;
                         }
                         default:
+                            request.getSession().setAttribute("mensaje", "El usuario y/o la clave son incorrectos!");
                             response.sendRedirect("pagError.jsp");
                             break;
                     }
                 }
             } catch (Exception ex) {
+                request.getSession().setAttribute("mensaje", "El usuario y/o la clave son incorrectos!");
                 response.sendRedirect("pagError.jsp");
             }
         }

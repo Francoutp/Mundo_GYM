@@ -1,8 +1,7 @@
 package Dao;
-
 /**
- * Fecha:18/09/2022 Versión: 1.0
- *
+ * Fecha:18/09/2022 
+ * Versión: 1.0
  * @author ricardo
  */
 import Conexion.MySQLConexion;
@@ -13,7 +12,7 @@ import Modelos.*;
 public class UsuarioDao extends MySQLConexion {
 
     //LOGEO
-    public Usuario Login(Usuario usu) {
+    public Usuario Logueo(Usuario objeto) {
         Usuario usuario = new Usuario();
         ResultSet rs;
         try {
@@ -22,12 +21,14 @@ public class UsuarioDao extends MySQLConexion {
                     + "PERFIL_USUARIO FROM MG_USUARIO WHERE NOMBRE_USUARIO=? "
                     + "AND CLAVE_USUARIO=?";
             PreparedStatement st = this.getConexion().prepareStatement(sql);
-            st.setString(1, usu.getNombreUsuario());
-            st.setString(2, usu.getClaveusuario());
+            st.setString(1, objeto.getNombreUsuario());
+            st.setString(2, objeto.getClaveusuario());
             rs = st.executeQuery();
             while (rs.next()) {
-                usuario.setPerfilUsuario(rs.getInt("PERFIL_USUARIO"));
-                usuario.setIdUsuario(rs.getInt("ID_USUARIO"));
+                usuario.setIdUsuario(rs.getInt(1));
+                usuario.setNombreUsuario(rs.getString(2));
+                usuario.setClaveusuario(rs.getString(3));
+                usuario.setPerfilUsuario(rs.getInt(4));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -62,70 +63,16 @@ public class UsuarioDao extends MySQLConexion {
         return id;
     }
 
-    public String RegistrarUsuario(Usuario usuario) {
-        String msg = "";
+    public void actualizar(Usuario usu) {
         Connection cn = MySQLConexion.getConexion();
         try {
-            String sql = "INSERT INTO MG_USUARIO VALUES (?,?,?,?)";
+            String sql = "UPDATE MG_USUARIO SET CLAVE_USUARIO=? WHERE ID_USUARIO=?";
             PreparedStatement st = cn.prepareStatement(sql);
-            st.setInt(1, usuario.getIdUsuario());
-            st.setString(2, usuario.getNombreUsuario());
-            st.setString(3, usuario.getClaveusuario());
-            st.setInt(4, usuario.getPerfilUsuario());
-
-            if (st.executeUpdate() > 0) {
-                msg = "OK";
-            } else {
-                msg = "No se pudieron guardar datos del usuario.";
-            }
+            st.setString(1,usu.getClaveusuario());
+            st.setInt(2, usu.getIdUsuario());
+            st.executeUpdate(sql);
         } catch (Exception ex) {
             ex.printStackTrace();
-            msg = ex.getMessage();
         }
-        return msg;
-    }
-
-    public String EditarUsuario(Cliente obj) {
-        String msg = "";
-        Connection cn = MySQLConexion.getConexion();
-        try {
-            String sql = "update MG_USUARIO set nombre_usuario=? , clave_usuario=?"
-                    + " where id_usuario=?";
-            PreparedStatement st = cn.prepareStatement(sql);
-            st.setString(1, obj.getNombreUsuario());
-            st.setString(2, obj.getClaveusuario());
-            st.setInt(3, obj.getIdUsuario());
-
-            if (st.executeUpdate() > 0) {
-                msg = "OK";
-            } else {
-                msg = "No se pudieron editar datos del usuario.";
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            msg = ex.getMessage();
-        }
-        return msg;
-    }
-
-    public String EliminarUsuario(int id) {
-        String msg = "";
-        Connection cn = MySQLConexion.getConexion();
-        try {
-            String sql = "delete from MG_USUARIO "
-                    + " where id_usuario=?";
-            PreparedStatement st = cn.prepareStatement(sql);
-            st.setInt(1, id);
-
-            if (st.executeUpdate() > 0) {
-                msg = "OK";
-            } else {
-                msg = "No se pudieron eliminar datos del usuario.";
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            msg = ex.getMessage();
-        }
-        return msg;
     }
 }
