@@ -18,53 +18,46 @@ import javax.servlet.http.*;
  * @author ricardo
  */
 public class ControlAcceso extends HttpServlet {
-
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        if (request.getParameter("btnAcceder") != null) {
-            Usuario usu = new Usuario();
-            String user = request.getParameter("nombreUsuario");
-            String clave = request.getParameter("clave");
-            usu.setNombreUsuario(user);
-            usu.setClaveusuario(clave);
-            UsuarioDao objLogin = new UsuarioDao();
-            try {
-                List<Usuario> ListUsuario = new ArrayList();
-                usu = objLogin.Logueo(usu);
-                if (String.valueOf(usu.getPerfilUsuario()) == null) {
-                    //USUARIO NO ESTA REGISTRADO
-                    response.sendRedirect("pagError.jsp");
-                } else {
-                    switch (String.valueOf(usu.getPerfilUsuario())) {
-                        case "2": {
-                            //PERFIL DE ADMINISTRADOR
-                            HttpSession objetoSesion = request.getSession();
-                            objetoSesion.setAttribute("usuario", usu);
-                            request.getSession().setAttribute("mensaje", "El usuario y/o la clave son incorrectos!");
-                            response.sendRedirect("pagInicio.jsp");
-                            break;
-                        }
-                        case "1": {
-                            //PERFIL DE CLIENTE
-                            HttpSession objetoSesion = request.getSession();
-                            objetoSesion.setAttribute("usuario", usu);
-                            response.sendRedirect("pagHome.jsp");
-                            break;
-                        }
-                        default:
-                            request.getSession().setAttribute("mensaje", "El usuario y/o la clave son incorrectos!");
-                            response.sendRedirect("pagError.jsp");
-                            break;
-                    }
-                }
-            } catch (Exception ex) {
-                request.getSession().setAttribute("mensaje", "El usuario y/o la clave son incorrectos!");
-                response.sendRedirect("pagError.jsp");
-            }
+        String accion=request.getParameter("accion");
+        if (accion.equalsIgnoreCase("login")) {
+            login(request,response);
         }
     }
+
+    protected void login(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        String user = request.getParameter("nombreUsuario");
+        String clave = request.getParameter("clave");
+        Usuario usu = new Usuario();
+        usu.setNombreUsuario(user);
+        //usu.setClaveusuario(clave);
+        UsuarioDao objLogin = new UsuarioDao();
+        usu=objLogin.BuscarUsuario(usu);
+        if (usu.getNombreUsuario()==null) {
+            request.getSession().setAttribute("mensaje", "El usuario no existe!");
+            response.sendRedirect("pagErrorOut.jsp");
+        } else {
+            if (!usu.getClaveusuario().equals(clave)) {
+                request.getSession().setAttribute("mensaje", "La clave ingresada no es correcta!");
+                response.sendRedirect("pagErrorOut2.jsp");
+            } else {
+                Cliente cli=new Cliente();
+                ClienteDao objbusqueda = new ClienteDao();
+                cli=objbusqueda.ClientePorIdUsuario(usu.getIdUsuario());
+                HttpSession objetoSesion = request.getSession();
+                objetoSesion.setAttribute("usuario", usu);
+                objetoSesion.setAttribute("cliente", cli);
+                response.sendRedirect("pagInicio.jsp");
+            }
+        }
+    }          
+        
+     
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

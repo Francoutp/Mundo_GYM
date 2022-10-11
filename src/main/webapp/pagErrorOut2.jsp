@@ -4,7 +4,6 @@
     Author     : ricardo
 --%>
 
-<%@page import="Modelos.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page session="true" %>
 <!DOCTYPE html>
@@ -15,20 +14,6 @@
     </head>
     <body>
         <div class="container">
-            <%
-                HttpSession objetoSesion = request.getSession();
-                Usuario usu = (Usuario) objetoSesion.getAttribute("usuario");
-                Cliente cli = (Cliente) objetoSesion.getAttribute("cliente");
-                if (usu.getPerfilUsuario()==1) {
-                %>
-                <%@include file="includes/menuCliente.jsp" %>
-                <%
-                } else {
-                %>
-                <%@include file="includes/menuAdministrador.jsp" %>
-                <%
-                }
-            %>
         </div>
         <div class="wrapper">
             <form class="form-signin">

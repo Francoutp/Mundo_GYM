@@ -23,6 +23,9 @@ public class ControlUsuario extends HttpServlet {
         if (accion.equalsIgnoreCase("actualizarclave")) {
             actualizar(request,response);
         }
+        if (accion.equalsIgnoreCase("actualizarclaveadm")) {
+            actualizaradm(request,response);
+        }
     }
     
     protected void actualizar(HttpServletRequest request, HttpServletResponse response)
@@ -52,6 +55,31 @@ public class ControlUsuario extends HttpServlet {
         }
     }
     
+    protected void actualizaradm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        Usuario u=new Usuario();
+        u.setNombreUsuario(request.getParameter("usuenviar"));
+        String clave1=request.getParameter("claveActual");
+        Usuario u2=obj.BuscarUsuario(u);
+        if (!clave1.equals(u2.getClaveusuario())) {
+            request.getSession().setAttribute("mensaje", "La clave actual ingresada es incorrecta");
+            request.getRequestDispatcher("/pagError.jsp").forward(request, response);
+        }else{
+            String clave2=request.getParameter("claveNueva");
+            String clave3=request.getParameter("claveNuevaConf");
+            if (!clave2.equals(clave3)) {
+               request.getSession().setAttribute("mensaje", "Las contraseñas nuevas ingresadas no coinciden");
+               request.getRequestDispatcher("/pagError.jsp").forward(request, response);
+            } else{
+                u2.setClaveusuario(clave3);
+                obj.actualizar(u2);
+                request.getSession().setAttribute("paginadestino", "pagListaClientes.jsp");
+                request.getSession().setAttribute("mensaje", "Contraseña Actualizada Correctamente");
+                request.getRequestDispatcher("/pagExito.jsp").forward(request, response);
+            }
+        }
+    }
     
     
     

@@ -23,9 +23,12 @@
                     </span>
                 </center>
                 <h2 align="center">Acceso al Sistema</h2>
+                <input type="hidden" name="accion" value="Login">
                 <input type="text" class="form-control" name="nombreUsuario" placeholder="Nombre de Usuario" required="" autofocus=""/>
                 <input type="password" class="form-control" name="clave" placeholder="Contraseña" required=""/>
                 <button type="submit" class="btn btn-warning btn-lg btn-block" name="btnAcceder">Ingresar</button>
+                <br>
+                ¿Eres nuevo? <a href="pagRegUsuOut.jsp">Regístrate aquí!</a>
             </form>
         </div>
     </body>

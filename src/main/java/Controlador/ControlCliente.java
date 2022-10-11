@@ -3,6 +3,7 @@ package Controlador;
 import Dao.ClienteDao;
 import Dao.UsuarioDao;
 import Modelos.Cliente;
+import Modelos.Usuario;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -11,142 +12,161 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ControlCliente extends HttpServlet {
-
-    private ClienteDao cliDao = new ClienteDao();
-    private UsuarioDao userDao = new UsuarioDao();
-    private final String PagListar = "/admin/PagClienteListar.jsp";
-    private final String PagAgregar = "/admin/PagClienteAgregar.jsp";
-    private final String PagEditar = "/admin/PagClienteEditar.jsp";
-
+    
+    UsuarioDao userobj=new UsuarioDao();
+    ClienteDao clieobj=new ClienteDao();
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        String accion = request.getParameter("accion");
-
-        if (accion.equalsIgnoreCase("listar")) {
-            Listar(request, response);
-        } else if (accion.equalsIgnoreCase("registrar")) {
-            Agregar(request, response);
-        } else if (accion.equalsIgnoreCase("guardar_datos")) {
-            GuardarDatos(request, response);
-        } else if (accion.equalsIgnoreCase("editar")) {
-            Editar(request, response);
-        } else if (accion.equalsIgnoreCase("guardar_edicion")) {
-            GuardarEdicion(request, response);
-        } else if (accion.equalsIgnoreCase("eliminar")) {
-            Eliminar(request, response);
+        String accion =request.getParameter("accion");
+        if (accion.equalsIgnoreCase("registrarusuarionuevoout")) {
+            registrarfuera(request,response);
+        }
+        if (accion.equalsIgnoreCase("registrarusuarionuevo")) {
+            registrardentro(request,response);
+        }
+        if (accion.equalsIgnoreCase("listarclientes")) {
+            listaclientes(request,response);
+        }
+        if (accion.equalsIgnoreCase("buscacliente")) {
+            buscacliente(request,response);
+        }
+        if (accion.equalsIgnoreCase("modificarcliente")){
+            modificacliente(request,response);
+        }
+        if (accion.equalsIgnoreCase("eliminarcliente")){
+            eliminacliente(request,response); 
         }
     }
-
-    protected void Eliminar(HttpServletRequest request, HttpServletResponse response)
+    
+    protected void registrardentro(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        int idCli = Integer.parseInt(request.getParameter("idCliente"));
-        int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
-        String msg;
-
-        msg = cliDao.EliminarCliente(idCli);
-        if (msg.equals("OK")) {
-            if (idUsuario != 0) {
-                msg = userDao.EliminarUsuario(idUsuario);
-                if (msg.equals("OK")) {
-                    request.getSession().setAttribute("success", "Los datos del cliente se eliminaron de forma correcta.");
-                } else {
-                    request.getSession().setAttribute("error", msg);
-                }
+        Usuario user=new Usuario();
+        Cliente clie=new Cliente();
+        user.setNombreUsuario(request.getParameter("nombreUsuario"));
+        user=userobj.BuscarUsuario(user);
+        if (user.getNombreUsuario()!=null) {
+            request.getSession().setAttribute("mensaje", "El usuario seleccionado ya existe!");
+            request.getRequestDispatcher("pagError.jsp").forward(request, response);
+        } else {
+            user.setNombreUsuario(request.getParameter("nombreUsuario")); //cargar usuario en variable
+            if (!request.getParameter("clave").equals(request.getParameter("claveConf"))) {
+                request.getSession().setAttribute("mensaje", "Las contraseñas ingresadas no coinciden!");
+                request.getRequestDispatcher("pagError.jsp").forward(request, response);
             } else {
-                request.getSession().setAttribute("success", "Los datos del cliente se eliminaron de forma correcta.");
+                user.setClaveusuario(request.getParameter("clave")); //cargar clave en variable
+                user.setPerfilUsuario(Integer.parseInt(request.getParameter("accesoCliente"))); //cargar perfil de cliente en variable
+                user.setIdUsuario(userobj.CorrelativoUsuario());//obtener correlativo de IdUsuario
+                userobj.AgregarUsuario(user);//grabar usuario
+                clie.setNombreCliente(request.getParameter("nombreCliente"));
+                clie.setApellidoCliente(request.getParameter("apellidoCliente"));
+                clie.setDni(request.getParameter("dniCliente"));
+                clie.setDireccion(request.getParameter("direccionCliente"));
+                clie.setTalla(Double.parseDouble(request.getParameter("tallaCliente")));
+                clie.setPesoInicial(Double.parseDouble(request.getParameter("pesoCliente")));
+                clie.setPesoActual(Double.parseDouble(request.getParameter("pesoCliente")));
+                clie.setImc();
+                clie.setIdUsuario(user.getIdUsuario());
+                clie.setCelular(request.getParameter("celularCliente"));
+                clieobj.AgregarCliente(clie);
+                request.getSession().setAttribute("paginadestino", "pagInicio.jsp");
+                request.getSession().setAttribute("mensaje", "Usuario registrado correctamente.");
+                request.getRequestDispatcher("pagExito.jsp").forward(request, response);
             }
-        } else {
-            request.getSession().setAttribute("error", msg);
         }
-
-        response.sendRedirect("ControlCliente?accion=listar");
     }
-
-    protected void Editar(HttpServletRequest request, HttpServletResponse response)
+    
+    protected void registrarfuera(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        int id = Integer.parseInt(request.getParameter("id"));
-
-        request.setAttribute("cliente", cliDao.BuscarPorId(id));
-        request.getRequestDispatcher(PagEditar).forward(request, response);
-    }
-
-    protected void GuardarEdicion(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        String msje = "";
-        Double IMC;
-
-        Cliente cliente = new Cliente();
-        cliente.setIdCliente(Integer.parseInt(request.getParameter("id")));
-        cliente.setNombreCliente(request.getParameter("nombreCliente"));
-        cliente.setApellidoCliente(request.getParameter("apellidoCliente"));
-        cliente.setDNI(request.getParameter("DNI"));
-        cliente.setCelular(request.getParameter("Celular"));
-        cliente.setDireccion(request.getParameter("Direccion"));
-        cliente.setTalla(Double.parseDouble(request.getParameter("Talla")));
-        cliente.setPeso_inicial(Double.parseDouble(request.getParameter("Peso")));
-        cliente.setPeso_actual(null);
-        IMC = (Double.parseDouble(request.getParameter("Peso")) / Math.pow(Double.parseDouble(request.getParameter("Talla")), 2));
-        cliente.setIMC(IMC);
-        String msg = cliDao.EditarCliente(cliente);
-
-        if (msg.equals("OK")) {
-            request.getSession().setAttribute("success", "Los datos del cliente se editaron de forma correcta.");
+        Usuario user=new Usuario();
+        Cliente clie=new Cliente();
+        user.setNombreUsuario(request.getParameter("nombreUsuario"));
+        user=userobj.BuscarUsuario(user);
+        if (user.getNombreUsuario()!=null) {
+            request.getSession().setAttribute("mensaje", "El usuario seleccionado ya existe!");
+            request.getRequestDispatcher("pagErrorOut2.jsp").forward(request, response);
         } else {
-            request.getSession().setAttribute("error", msg);
+            user.setNombreUsuario(request.getParameter("nombreUsuario")); //cargar usuario en variable
+            if (!request.getParameter("clave").equals(request.getParameter("claveConf"))) {
+                request.getSession().setAttribute("mensaje", "Las contraseñas ingresadas no coinciden!");
+                request.getRequestDispatcher("pagErrorOut2.jsp").forward(request, response);
+            } else {
+                user.setClaveusuario(request.getParameter("clave")); //cargar clave en variable
+                user.setPerfilUsuario(1); //cargar perfil de cliente en variable
+                user.setIdUsuario(userobj.CorrelativoUsuario());//obtener correlativo de IdUsuario
+                userobj.AgregarUsuario(user);//grabar usuario
+                clie.setNombreCliente(request.getParameter("nombreCliente"));
+                clie.setApellidoCliente(request.getParameter("apellidoCliente"));
+                clie.setDni(request.getParameter("dniCliente"));
+                clie.setDireccion(request.getParameter("direccionCliente"));
+                clie.setTalla(Double.parseDouble(request.getParameter("tallaCliente")));
+                clie.setPesoInicial(Double.parseDouble(request.getParameter("pesoCliente")));
+                clie.setPesoActual(Double.parseDouble(request.getParameter("pesoCliente")));
+                clie.setImc();
+                clie.setIdUsuario(user.getIdUsuario());
+                clie.setCelular(request.getParameter("celularCliente"));
+                clieobj.AgregarCliente(clie);
+                request.getSession().setAttribute("paginadestino", "pagLogin.jsp");
+                request.getSession().setAttribute("mensaje", "Usuario registrado correctamente. Inicie sesion");
+                request.getRequestDispatcher("pagExitoOut.jsp").forward(request, response);
+            }
         }
-
-        response.sendRedirect("ControlCliente?accion=listar");
     }
-
-    protected void GuardarDatos(HttpServletRequest request, HttpServletResponse response)
+    
+    protected void listaclientes(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String msje = "";
-        Double IMC;
-        Cliente cliente = new Cliente();
-        cliente.setIdCliente(cliDao.Id_Correlativo_Cliente());
-        cliente.setNombreCliente(request.getParameter("nombreCliente"));
-        cliente.setApellidoCliente(request.getParameter("apellidoCliente"));
-        cliente.setDNI(request.getParameter("DNI"));
-        cliente.setCelular(request.getParameter("Celular"));
-        cliente.setDireccion(request.getParameter("Direccion"));
-        cliente.setTalla(Double.parseDouble(request.getParameter("Talla")));
-        cliente.setPeso_inicial(Double.parseDouble(request.getParameter("Peso")));
-        cliente.setPeso_actual(null);
-        IMC = (Double.parseDouble(request.getParameter("Peso")) / Math.pow(Double.parseDouble(request.getParameter("Talla")), 2));
-        cliente.setIMC(IMC);
-        String msg = cliDao.RegistrarCliente(cliente);
-
-        if (msg.equals("OK")) {
-            request.getSession().setAttribute("success", "Los datos del cliente se registraron de forma correcta.");
-        } else {
-            request.getSession().setAttribute("error", msg);
-        }
-
-        response.sendRedirect("ControlCliente?accion=listar");
+        request.getRequestDispatcher("pagListaClientes.jsp").forward(request, response);
     }
-
-    protected void Agregar(HttpServletRequest request, HttpServletResponse response)
+    
+    protected void buscacliente(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        request.getRequestDispatcher(PagAgregar).forward(request, response);
+        int idcli=Integer.parseInt(request.getParameter("idcliente"));
+        Cliente cli=clieobj.ClientePorId(idcli);
+        Usuario user=userobj.BuscarUsuarioporID(cli.getIdUsuario());
+        request.setAttribute("entrega", cli);
+        request.setAttribute(("entrega2"), user);
+        request.getRequestDispatcher("pagModificarCliente.jsp").forward(request, response);
     }
-
-    protected void Listar(HttpServletRequest request, HttpServletResponse response)
+    
+    protected void modificacliente(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        request.setAttribute("ListaCliente", cliDao.ListarTodos());
-        request.getRequestDispatcher(PagListar).forward(request, response);
+        Cliente cli=new Cliente();
+        cli.setIdCliente(Integer.parseInt(request.getParameter("idcliente")));
+        cli.setNombreCliente(request.getParameter("nombreCliente"));
+        cli.setApellidoCliente(request.getParameter("apellidoCliente"));
+        cli.setDni(request.getParameter("dniCliente"));
+        cli.setDireccion(request.getParameter("direccionCliente"));
+        cli.setTalla(Double.parseDouble(request.getParameter("tallaCliente")));
+        cli.setPesoInicial(Double.parseDouble(request.getParameter("pesoInicial")));
+        cli.setPesoActual(Double.parseDouble(request.getParameter("pesoActual")));
+        cli.setImc();
+        cli.setIdUsuario(Integer.parseInt(request.getParameter("idusuario")));
+        cli.setCelular(request.getParameter("celularCliente"));
+        clieobj.ModificarCliente(cli);
+        Usuario usu=new Usuario();
+        usu.setIdUsuario(Integer.parseInt(request.getParameter("idusuario")));
+        usu.setPerfilUsuario(Integer.parseInt(request.getParameter("accesoCliente")));
+        userobj.ActualizaNivelAcceso(usu);
+        request.getSession().setAttribute("paginadestino", "pagListaClientes.jsp");
+        request.getSession().setAttribute("mensaje", "Cliente actualizado correctamente");
+        request.getRequestDispatcher("pagExito.jsp").forward(request, response);
     }
+    
+    protected void eliminacliente(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        int idcli=Integer.parseInt(request.getParameter("idcliente"));
+        int idusu=Integer.parseInt(request.getParameter("idusuario"));
+        clieobj.EliminarCliente(idcli, idusu);
+        request.getRequestDispatcher("pagListaClientes.jsp").forward(request, response);
+    }
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

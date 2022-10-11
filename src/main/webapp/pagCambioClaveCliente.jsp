@@ -31,18 +31,14 @@
         </div>
         <div class="wrapper">
             <form class="form-signin" action="ControlUsuario">
-                <%--<center>
-                    <span>
-                        <img src="imagenes/logomundogym2.jpg" height="200">
-                    </span>
-                </center>--%>
-                <h3 align="center">Actualiza tu contraseña</h3>
-                <input type="text" class="form-control" name="usuario" placeholder="<%=usu.getNombreUsuario()%>" disabled=""/>
+                <h3 align="center">Actualiza la contraseña</h3>
+                <input type="text" class="form-control" name="usuregi" value="<%=request.getParameter("nomusu")%>" disabled=""/>
                 <input type="password" class="form-control" name="claveActual" placeholder="Contraseña Actual" required="" autofocus=""/>
                 <input type="password" class="form-control" name="claveNueva" placeholder="Contraseña Nueva" required=""/>
                 <input type="password" class="form-control" name="claveNuevaConf" placeholder="Confirma Contraseña Nueva" required=""/>
                 <center>
-                    <input type="hidden" name="accion" value="ActualizarClave">
+                    <input type="hidden" name="usuenviar" value="<%=request.getParameter("nomusu")%>">
+                    <input type="hidden" name="accion" value="ActualizarClaveAdm">
                     <button type="submit" class="btn btn-warning btn-lg btn-block" name="btnAcceder">Cambiar</button>
                     <button type="button" class="btn btn-warning btn-lg btn-block" name="btnCancelar" onclick="history.go(-1)">Cancelar</button>
                 </center>

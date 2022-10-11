@@ -14,11 +14,10 @@
     </head>
     <body>
         <%
-            HttpSession objetoSesion =request.getSession();
-            String nom=(String)objetoSesion.getAttribute("nombreUsuarioLogin");
-            String niv=(String)objetoSesion.getAttribute("nivel");
-            int id=(Integer)objetoSesion.getAttribute("idUsuarioLogin");
-            out.print("Datos de sesión: "+nom+", "+niv+" ,"+id);
+            String nomdieta=request.getParameter("nombreDieta");
+            int idtipo=Integer.parseInt(request.getParameter("tipoDieta"));
+            int idhorario=Integer.parseInt(request.getParameter("horaDieta"));
+            out.print("Datos de recibidos "+nomdieta+", "+idtipo+" ,"+idhorario);
         %>
     </body>
 </html>

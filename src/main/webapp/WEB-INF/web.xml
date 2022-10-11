@@ -5,24 +5,32 @@
         <servlet-class>Controlador.ControlAcceso</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ControlUsuario</servlet-name>
+        <servlet-class>Controlador.ControlUsuario</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ControlCliente</servlet-name>
         <servlet-class>Controlador.ControlCliente</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ControlUsuario</servlet-name>
-        <servlet-class>Controlador.ControlUsuario</servlet-class>
+        <servlet-name>ControlDieta</servlet-name>
+        <servlet-class>Controlador.ControlDieta</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ControlAcceso</servlet-name>
         <url-pattern>/ControlAcceso</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>ControlUsuario</servlet-name>
+        <url-pattern>/ControlUsuario</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ControlCliente</servlet-name>
         <url-pattern>/ControlCliente</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ControlUsuario</servlet-name>
-        <url-pattern>/ControlUsuario</url-pattern>
+        <servlet-name>ControlDieta</servlet-name>
+        <url-pattern>/ControlDieta</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

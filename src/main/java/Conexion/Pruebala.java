@@ -18,9 +18,6 @@ public class Pruebala {
      */
     public static void main(String[] args) {
         MySQLConexion.getConexion();
-        
-        ClienteDao dao = new ClienteDao();
-        System.out.println(dao.ListarTodos());
     }
     
 }

@@ -15,29 +15,17 @@
     </head>
     <body>
         <div class="container">
-            <%
-                HttpSession objetoSesion = request.getSession();
-                Usuario usu = (Usuario) objetoSesion.getAttribute("usuario");
-                Cliente cli = (Cliente) objetoSesion.getAttribute("cliente");
-                if (usu.getPerfilUsuario()==1) {
-                %>
-                <%@include file="includes/menuCliente.jsp" %>
-                <%
-                } else {
-                %>
-                <%@include file="includes/menuAdministrador.jsp" %>
-                <%
-                }
-            %>
         </div>
         <div class="wrapper">
             <form class="form-signin">
                 <br><!-- espacio -->
                 <br><!-- espacio adicional -->
                 <center>
-                    <h4 style="color: #0275d8">
+                    <h1 style="color: #0275d8">
                         <span style="color:green" class="fa fa-user-plus" ></span>
+                    </h1>
                         <br><!-- uno mas por siacaso -->
+                    <h4 style="color: #0275d8">
                         <%
                             out.println(request.getSession().getAttribute("mensaje"));
                             //HttpSession objetoSesion =request.getSession();

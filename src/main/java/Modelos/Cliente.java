@@ -15,11 +15,17 @@ public class Cliente{
     private double imc;
     private int idUsuario;
     private String celular;
+    private String observacion;
 
+    @Override
+    public String toString() {
+        return "Cliente{" + "idCliente=" + idCliente + ", nombreCliente=" + nombreCliente + ", apellidoCliente=" + apellidoCliente + ", dni=" + dni + ", direccion=" + direccion + ", talla=" + talla + ", pesoInicial=" + pesoInicial + ", pesoActual=" + pesoActual + ", imc=" + imc + ", idUsuario=" + idUsuario + ", celular=" + celular + ", observacion=" + observacion + '}';
+    }
+    
     public Cliente() {
     }
 
-    public Cliente(int idCliente, String nombreCliente, String apellidoCliente, String dni, String direccion, double talla, double pesoInicial, double pesoActual, double imc, int idUsuario, String celular) {
+    public Cliente(int idCliente, String nombreCliente, String apellidoCliente, String dni, String direccion, double talla, double pesoInicial, double pesoActual, double imc, int idUsuario, String celular, String observacion) {
         this.idCliente = idCliente;
         this.nombreCliente = nombreCliente;
         this.apellidoCliente = apellidoCliente;
@@ -31,8 +37,39 @@ public class Cliente{
         this.imc = imc;
         this.idUsuario = idUsuario;
         this.celular = celular;
+        this.observacion=observacion;
+    }
+    
+    public double CalculoIMC(){
+        return pesoActual/(talla*talla);
+    }
+    
+    public String ObtenerObservacion(){
+        String msj="";
+        if (CalculoIMC()<18.5) {
+            msj="Bajo de peso";
+        } else {
+            if (CalculoIMC()>=18.5 && CalculoIMC()<=24.9) {
+                msj="Peso normal";
+            } else {
+                if (CalculoIMC()>=25 && CalculoIMC()<=29.9) {
+                    msj="Sobrepeso";
+                } else {
+                    msj="Obesidad";
+                }
+            }
+        }
+        return msj;
     }
 
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion() {
+        this.observacion = ObtenerObservacion();
+    }
+    
     public String getCelular() {
         return celular;
     }
@@ -109,8 +146,8 @@ public class Cliente{
         return imc;
     }
 
-    public void setImc(double imc) {
-        this.imc = imc;
+    public void setImc() {
+        this.imc = CalculoIMC();
     }
 
     public int getIdUsuario() {
