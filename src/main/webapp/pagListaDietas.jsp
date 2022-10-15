@@ -51,6 +51,7 @@
                         <th class="bg-dark text-white" style="text-align: center">Nombres de la Dieta</th>
                         <th class="bg-dark text-white" style="text-align: center">Tipo de Dieta</th>
                         <th class="bg-dark text-white" style="text-align: center">Horario de Dieta</th>
+                        <th class="bg-dark text-white" style="text-align: center">Ver</th>
                         <th class="bg-dark text-white" style="text-align: center">Editar</th>
                         <th class="bg-dark text-white" style="text-align: center">Eliminar</th>
                     </tr>
@@ -64,6 +65,22 @@
                                     + "<td style='text-align: center'>" + objeto.BuscarHorarioPorID(x.getIdHorarioDieta()));
                     %>
                     <td style="text-align: center">
+                        <form id="fr3" action="ControlDieta" method="post">
+                            <input type="hidden" name="accion" value="Ingredientespordieta">
+                            <input type="hidden" name="iddieta" value="<%=x.getIdDieta()%>">
+                            <button type="submit" class="btn btn-primary btn-block" title="Ingredientes" name="btnVerIngredientes">
+                                <span class="glyphicon glyphicon-apple"></span>
+                            </button>
+                        </form>
+                        <form id="fr4" action="ControlDieta" method="post">
+                            <input type="hidden" name="accion" value="Preparacionpordieta">
+                            <input type="hidden" name="iddieta" value="<%=x.getIdDieta()%>">
+                            <button type="submit" class="btn btn-primary btn-block" title="Preparación" name="btnVerPreparacion">
+                                <span class="glyphicon glyphicon-cutlery"></span>
+                            </button>
+                        </form>
+                    </td>
+                    <td style="text-align: center">
                         <form id="fr2" action="ControlDieta" method="post">
                             <input type="hidden" name="accion" value="BuscaDieta">
                             <input type="hidden" name="iddieta" value="<%=x.getIdDieta()%>">
@@ -71,10 +88,6 @@
                                 <span class="glyphicon glyphicon-edit"></span>
                             </button>
                         </form>
-
-                        <%--<a href="ControlCliente?accion=ModificarCliente&nro=<%=x.getIdCliente()%>">
-                            <img src="imagenes/btn_modificar.JPG" height="30" width="30">
-                        </a>--%>
                     </td>
                     <td style="text-align: center">
                         <a class="btn btn-danger btn-block" href="ControlDieta?accion=EliminarDieta&iddieta=<%=x.getIdDieta()%>" onclick="return confirm('¿Esta seguro de eliminar la dieta?')">

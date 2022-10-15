@@ -48,13 +48,13 @@
                         <th class="bg-dark text-white" style="text-align: center">Id</th>
                         <th class="bg-dark text-white" style="text-align: center">Nombres y Apellidos</th>
                         <th class="bg-dark text-white" style="text-align: center">DNI</th>
-                        <th class="bg-dark text-white" style="text-align: center">Dirección</th>
+                        <%--<th class="bg-dark text-white" style="text-align: center">Dirección</th>--%>
                         <th class="bg-dark text-white" style="text-align: center">Talla</th>
                         <th class="bg-dark text-white" style="text-align: center">Peso Inicial (Kg)</th>
                         <th class="bg-dark text-white" style="text-align: center">Peso Actual (Kg)</th>
                         <th class="bg-dark text-white" style="text-align: center">IMC</th>
-                            <%--<th style="text-align: center">IdUsuario</th>--%>
-                        <th class="bg-dark text-white" style="text-align: center">Celular</th>
+                        <%--<th style="text-align: center">IdUsuario</th>--%>
+                        <%--<th class="bg-dark text-white" style="text-align: center">Celular</th>--%>
                         <th class="bg-dark text-white" style="text-align: center">Observación</th>
                         <th class="bg-dark text-white" style="text-align: center">Editar</th>
                         <th class="bg-dark text-white" style="text-align: center">Eliminar</th>
@@ -65,13 +65,13 @@
                             out.print("<tr><td style='text-align: center'>" + x.getIdCliente()
                                     + "<td>" + x.getNombreCliente() + " " + x.getApellidoCliente()
                                     + "<td style='text-align: center'>" + x.getDni()
-                                    + "<td>" + x.getDireccion()
+                                    //+ "<td>" + x.getDireccion()
                                     + "<td style='text-align: right'>" + df.format(x.getTalla())
                                     + "<td style='text-align: right'>" + df.format(x.getPesoInicial())
                                     + "<td style='text-align: right'>" + df.format(x.getPesoActual())
                                     + "<td style='text-align: right'>" + df.format(x.getImc())
                                     //+"<td style='text-align: right'>"+x.getIdUsuario()
-                                    + "<td style='text-align: right'>" + x.getCelular()
+                                    //+ "<td style='text-align: right'>" + x.getCelular()
                                     + "<td style='text-align: center'>" + x.getObservacion());
                     %>
                     <td style="text-align: center">
